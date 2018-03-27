@@ -4,7 +4,7 @@ It is a simple AWS S3 library for Ruby
 
 ## Installation
 
-```
+```bash
 $ gem install s3-client
 ```
 
@@ -14,7 +14,7 @@ $ gem install s3-client
 
 Set access key ID and secret access key, and generate client.
 
-```
+```ruby
 S3::Client.new(<access_key_id>, <secret_access_key>, <Option>)
 ```
 
@@ -33,7 +33,7 @@ In addition to the access key ID and secret access key, the options shown in the
 
 ### Sample
 
-```
+```ruby
 require 's3/client'
 
 access_key_id = ENV['AWS_ACCESS_KEY_ID']
@@ -47,7 +47,7 @@ client = S3::Client.new(access_key_id, secret_access_key, options)
 
 ### Error Response
 
-In case of errors caused by API, an exception (S3::Client::APIFailure) occurs.
+In case of errors caused by API, an exception (S3::Client::APIFailure) occurs.  
 The following information is stored in S3::Client::APIFailure.
 
 |Name|Overview|
@@ -70,9 +70,19 @@ In addition, other error responses are as follows.
 
 ### Detail of Function
 
+- [Generate Client](#generate-client)
+- [Get bucket](#get-bucket)
+- [Create bucket](#create-bucket)
+- [Delete bucket](#delete-bucket)
+- [Get object list](#get-object-list)
+- [Get object](#get-object)
+- [Create object](#create-object)
+- [Delete object](#delete-object)
+- [Generate signature](#generate-signature)
+
 #### Get bucket list
 
-```
+```ruby
 client.buckets.each do |bucket|
   puts bucket.name
   #=> bucket1
@@ -84,7 +94,7 @@ end
 
 Gets the specified bucket.
 
-```
+```ruby
 # Select bucket
 bucket = client.buckets['bucket']
 
@@ -94,7 +104,7 @@ puts bucket.name
 
 ### Create bucket
 
-```
+```ruby
 bucket = client.buckets.create('bucket')
 
 puts bucket.name
@@ -103,7 +113,7 @@ puts bucket.name
 
 It can also be created by the following method.
 
-```
+```ruby
 bucket = client.create_bucket('bucket')
 
 puts bucket.name
@@ -112,25 +122,23 @@ puts bucket.name
 
 ### Delete bucket
 
-```
+```ruby
 bucket = client.buckets['bucket']
 
 bucket.delete
-
 ```
 
 It can also be deleted by the following method.
 
 
-```
+```ruby
 client.delete_bucket('bucket')
-
 ```
 
 ### Get object list
 
 
-```
+```ruby
 bucket = client.buckets['bucket']
 
 bucket.objects.each do |object|
@@ -150,7 +158,7 @@ end
 
 Example when delimiter is specified
 
-```
+```ruby
 # Data existing on S3
 # /foo/photo/2009/index.html
 # /foo/photo/2009/12/index.html
@@ -179,7 +187,7 @@ You can narrow down the objects by setting the following parameters of the where
 
 ### Get object
 
-```
+```ruby
 bucket = client.buckets['bucket']
 
 object = bucket.objects['object1/test.gz']
@@ -197,7 +205,7 @@ puts object.read(0..2)
 
 ### Create object
 
-```
+```ruby
 bucket = client.buckets['bucket']
 
 object = bucket.objects['object1/test.json']
@@ -211,7 +219,7 @@ object.write(Pathname.new('./object_1.json'))
 
 Multi-part upload is supported by passing options.
 
-```
+```ruby
 bucket = client.buckets['bucket']
 
 object = bucket.objects['object1/test.json']
@@ -221,7 +229,6 @@ object.write(Pathname.new('./object_1.json'), multipart: true, jobs: 10, splitsz
 
 When using multipart upload, you can specify the following options:
 
-
 |Parameter|Required|Type|Default|Overview|
 |:---|:---|:---|:---|:---|
 |multipart|no|Boolean|false|Enable multipart upload|
@@ -230,7 +237,7 @@ When using multipart upload, you can specify the following options:
 
 ### Delete object
 
-```
+```ruby
 bucket = client.buckets['bucket']
 
 object = bucket.objects['object1/test.json']
@@ -240,7 +247,21 @@ object.delete
 
 It can also be deleted by the following method.
 
-
-```
+```ruby
 client.delete_object('bucket', 'object_1/test.json')
+```
+
+### Generate signature
+
+Create signed AWS S3 downloaded link.
+
+```ruby
+expire_at = (Time.now + 60 * 60).to_i
+bucket = 'bucket1'
+object = 'object1/data'
+signature = client.api.download_signature(expire_at, bucket, object)
+
+url = File.join(client.endpoint, bucket, object)
+puts "#{url}?AWSAccessKeyId=#{client.access_key_id}&Expires=#{expire_at}&Signature=#{signature}"
+#=> https://s3.ap-northeast-1.amazonaws.com/bucket1/object1/data?AWSAccessKeyId=XXX&Expires=1522148801&Signature=XXX
 ```

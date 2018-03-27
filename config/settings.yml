@@ -1,0 +1,11 @@
+defaults: &defaults
+  endpoint: 'https://s3.ap-northeast-1.amazonaws.com'
+  force_path_style: false
+  debug: false
+  location: ap-northeast-1
+
+test:
+  <<: *defaults
+  endpoint: 'http://localhost:9292'
+  force_path_style: true
+  location: localhost

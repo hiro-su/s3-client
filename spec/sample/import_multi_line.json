@@ -1,0 +1,7 @@
+{"test":"abc", "sample":1, "float_test":222.25}
+{"test":"abc", "sample":1, "float_test":222.25}
+{"test":"abc", "sample":2, "float_test":222.25}
+{"test":"abc2", "sample":2, "float_test":222.25}
+{"test":"abc2", "sample":2, "float_test":222.25}
+{"test":"def", "sample":2, "float_test":222.25}
+{"test":"def", "sample":2, "float_test":222.25}

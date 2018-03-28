@@ -70,7 +70,7 @@ In addition, other error responses are as follows.
 
 ### Detail of Function
 
-- [Generate Client](#generate-client)
+- [Get bucket list](#get-bucket-list)
 - [Get bucket](#get-bucket)
 - [Create bucket](#create-bucket)
 - [Delete bucket](#delete-bucket)
